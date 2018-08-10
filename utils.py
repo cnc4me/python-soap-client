@@ -1,5 +1,20 @@
 import re
-import json
+from datetime import datetime
+
+import jsonpickle
+from lxml import objectify
+from requests import Response
+
+import fastemsdate
+
+
+class DatetimeHandler(jsonpickle.handlers.BaseHandler):
+    def flatten(self, obj, data):
+        if isinstance(obj, datetime):
+            return fastemsdate.to_string(obj)
+
+
+jsonpickle.handlers.registry.register(datetime, DatetimeHandler)
 
 
 def load_xml_template(filename):
@@ -8,26 +23,32 @@ def load_xml_template(filename):
 
 
 def format_template(filename, data):
-   return load_xml_template(filename).format(**data)
+    return load_xml_template(filename).format(**data)
 
 
-def pretty_print_json(obj):
-    print(json.dumps(obj, indent=2, sort_keys=True))
+def print_json(obj):
+    print(jsonpickle.dumps(obj, unpicklable=False))
 
 
 def stuff_envelope(xml_str):
     return '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body>%s</s:Body></s:Envelope>' % xml_str
 
 
+def parse_response(response: Response):
+    root = objectify.fromstring(response.text)
+
+    return xml_to_dict(root)['Body']
+
+
 def xml_to_dict(element):
-    arrayables = {
+    arrayables = (
         'Data',
         'Steps',
         'Programs',
         'Operations',
         'MaterialOperations',
         'AlternativeProcessPlans',
-    }
+    )
 
     if re.sub(r'{.*}', '', element.tag) in arrayables:
         return [xml_to_dict(e) for e in element.getchildren()]
@@ -36,7 +57,3 @@ def xml_to_dict(element):
             return {re.sub(r'{.*}', '', e.tag): xml_to_dict(e) for e in element.getchildren()}
         else:
             return str(element.pyval)
-
-
-if __name__ == '__main__':
-    print(load_xml_template('./templates/CreateOrder.xml'))

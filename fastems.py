@@ -1,15 +1,37 @@
-import utils
-import fastems
-import requests
-from lxml import objectify
-from datetime import datetime, timedelta
+from datetime import datetime
+from random import randint
 
+import requests
+
+import fastemsdate
+import schedule
+import utils
+from services import Services
 
 mms_base_uri = 'http://fpc27536s1/MMS5/'
-order_times_format = '%Y-%m-%dT%H:%M:%SZ'
 
 
-def build_request_params(service, soap_action, data):
+def get_part_number_to_gid_dict():
+    response = Services.BaseData.service.GetItemBaseData()
+
+    return {i['Name']: i['Id'] for i in response['Data']['ItemBaseDataDto']}
+
+
+def create_order(order_data):
+    payload = utils.format_template('./templates/CreateOrder.xml', order_data)
+
+    request_params = {
+        'data': payload,
+        'service': 'OrderService',
+        'soap_action': 'Fastems.Ui/IOrderService/CreateOrder'
+    }
+
+    soap_request = _build_request_params(**request_params)
+
+    return requests.post(**soap_request)
+
+
+def _build_request_params(service, soap_action, data):
     return {
         'url': mms_base_uri + 'Services/' + service + '.svc',
         'data': utils.stuff_envelope(data),
@@ -30,50 +52,19 @@ def build_request_params(service, soap_action, data):
     }
 
 
-def parse_response(response):
-    root = objectify.fromstring(response.text)
-
-    return utils.xml_to_dict(root)['Body']
-
-
-def get_all_process_plans():
-    data = '<GetItemBaseData xmlns="http://Fastems.Ui"></GetItemBaseData>'
-
-    soap_request = build_request_params('BaseDataService', 'Fastems.Ui/IBaseDataService/GetItemBaseData', data)
-
-    response = requests.post(**soap_request)
-
-    plans = fastems.parse_response(response)
-
-    return plans['GetItemBaseDataResponse']['GetItemBaseDataResult']['Data']
-
-
-def create_order(order_data):
-    payload = utils.format_template('./templates/CreateOrder.xml', order_data)
-
-    request_params = {
-        'data': payload,
-        'service': 'OrderService',
-        'soap_action': 'Fastems.Ui/IOrderService/CreateOrder'
-    }
-
-    soap_request = build_request_params(**request_params)
-
-    return requests.post(**soap_request)
-
-
 if __name__ == '__main__':
     order_data = {
         'gid': 'a0f77636-8ca6-4893-8aa4-a6be006a14b7',
         'part_number': '8029-3-296',
-        'description': 'Batch gid Test',
-        'order_number': 12345,
-        'quantity': 1000000,
+        'description': 'Batch Order Creation Test',
+        'order_number': 99999,
+        'quantity': randint(10000, 90000),
         'status': 'Planned',
-        'start_date': datetime.now().strftime(order_times_format),
-        'due_date': (datetime.now() + timedelta(days=5)).strftime(order_times_format)
+        'start_date': fastemsdate.start_now(),
+        'due_date': fastemsdate.days_from_now(5)
     }
 
-    response = fastems.create_order(order_data)
+    response = create_order(order_data)
+    result = utils.parse_response(response)['CreateOrderResponse']
 
-    print(response.text)
+    print(result)
