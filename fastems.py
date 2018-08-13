@@ -4,7 +4,6 @@ from random import randint
 import requests
 
 import fastemsdate
-import schedule
 import utils
 from services import Services
 
