@@ -10,10 +10,14 @@ from services import Services
 mms_base_uri = 'http://fpc27536s1/MMS5/'
 
 
-def get_part_number_to_gid_dict():
+def get_base_data():
     response = Services.BaseData.service.GetItemBaseData()
 
-    return {i['Name']: i['Id'] for i in response['Data']['ItemBaseDataDto']}
+    return response['Data']['ItemBaseDataDto']
+
+
+def get_part_number_to_gid_dict():
+    return {i['Name']: i['Id'] for i in get_base_data()}
 
 
 def create_order(order_data):

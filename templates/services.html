@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Fastems Bridge | Service List</title>
+</head>
+<body>
+    <ul id="navigation">
+    {% for service in services %}
+        <li><a href="{{ url_for('.service', service=service) }}">{{ service }}</a></li>
+    {% endfor %}
+    </ul>
+</body>
+</html>

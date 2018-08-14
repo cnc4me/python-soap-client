@@ -56,4 +56,4 @@ def xml_to_dict(element):
         if element.getchildren():
             return {re.sub(r'{.*}', '', e.tag): xml_to_dict(e) for e in element.getchildren()}
         else:
-            return str(element.pyval)
+            return str(element)
