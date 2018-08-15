@@ -1,6 +1,5 @@
 import io
 import operator
-from datetime import datetime
 
 from flask import Blueprint, render_template
 from requests import Session
@@ -9,33 +8,20 @@ from zeep import Client
 from zeep.cache import SqliteCache
 from zeep.transports import Transport
 
-mms_base_uri = 'http://fpc27536s1/MMS5/'
+import config
+from fastems.plugins import FastemsHeadersPlugin
+
 bp = Blueprint('services', __name__, url_prefix='/services')
 
 
 def _get_client(service):
     session = Session()
     session.auth = HTTPBasicAuth('mmsuser', 'user')
-    session.headers = {
-        'Accept': '*/*',
-        'Referer': mms_base_uri + 'DataManager.xap?ignore={:%m-%d-%Y %H:%M:%S %p}'.format(datetime.now()),
-        'Accept-Language': 'en-US',
-        # 'Content-Length': str(len(request)),
-        'Content-Type': 'text/xml; charset=utf-8',
-        # 'SOAPAction': 'http://' + soap_action,
-        'Accept-Encoding': 'gzip, deflate',
-        'User-Agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/7.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; McAfee; InfoPath.2)',
-        'Host': 'fpc27536s1',
-        'DNT': '1',
-        'Connection': 'Keep-Alive',
-        'Cache-Control': 'no-cache'
-    }
 
     transport = Transport(cache=SqliteCache(), session=session)
+    wsd_uri = 'http://%s/MMS5/Services/%sService.svc?wsdl' % (config.FASTEMS_HOST, service)
 
-    return Client(
-        'http://fpc27536s1/MMS5/Services/%sService.svc?wsdl' % service,
-        transport=transport)
+    return Client(wsd_uri, transport=transport, plugins=[FastemsHeadersPlugin()])
 
 
 class Services(object):

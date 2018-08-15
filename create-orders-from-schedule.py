@@ -1,45 +1,71 @@
-from time import sleep
+import random
+import sys
+import time
 
-import fastems
-import schedule
-import utils
+from colorama import Back, Fore, Style, init
 
-print('+--------------------------+', flush=True)
-print('|      Fastems Bridge      |', flush=True)
-print('+--------------------------+', flush=True)
-print('', flush=True)
+import config
+from fastems.job import job_factory
+from schedule import Schedule
 
-print('Fetching GIDs from Fastems...', flush=True)
-gid_map = fastems.get_part_number_to_gid_dict()
-print('Done!', flush=True)
-print('', flush=True)
 
-print('Reading and parsing schedule CSV...', flush=True)
-try:
-    scheduled_work = schedule.get_scheduled_work()
-    print('Done!', flush=True)
-    print('', flush=True)
+def fprint(s):
+    print(s, flush=True)
 
-    for router in scheduled_work:
-        if router['part_number'] in gid_map:
-            router['gid'] = gid_map[router['part_number']]
+if __name__ == '__main__':
+    init(strip=False)
 
-            # print(repr(router))
-            print('|', flush=True)
-            print('| Found GID[{gid}] for {part_number}'.format(**router), flush=True)
-            print('+--> Creating order for RT#{order_number} - {description}'.format(**router), flush=True)
+    fprint(Back.BLUE+Fore.BLACK)
+    fprint('     _________   ___________________  ________    ____  ____  ____  __________     __________  _________  __________  ____  ')
+    fprint('    / ____/   | / ___/_  __/ ____/  |/  / ___/   / __ \/ __ \/ __ \/ ____/ __ \   / ____/ __ \/ ____/   |/_  __/ __ \/ __ \ ')
+    fprint('   / /_  / /| | \__ \ / / / __/ / /|_/ /\__ \   / / / / /_/ / / / / __/ / /_/ /  / /   / /_/ / __/ / /| | / / / / / / /_/ / ')
+    fprint('  / __/ / ___ |___/ // / / /___/ /  / /___/ /  / /_/ / _, _/ /_/ / /___/ _, _/  / /___/ _, _/ /___/ ___ |/ / / /_/ / _, _/  ')
+    fprint(' /_/   /_/  |_/____//_/ /_____/_/  /_//____/   \____/_/ |_/_____/_____/_/ |_|   \____/_/ |_/_____/_/  |_/_/  \____/_/ |_|   ')
+    fprint('                                                                                                                            ')
+    fprint(Style.RESET_ALL + '')
 
-            response = fastems.create_order(router)
-            result = utils.parse_response(response)['CreateOrderResponse']['CreateOrderResult']
+    try:
+        fprint(Fore.CYAN+'[INFO] Reading and parsing schedule CSV...')
+        access_schedule = Schedule(config.SCHEDULE_CSV_PATH)
+        fprint(Fore.GREEN+'...Done!')
+        fprint('')
+    except PermissionError as e:
+        fprint(Fore.RED+'There was an error when reading the from %s' % config.SCHEDULE_CSV_PATH)
+        fprint('[ERROR] %s' % str(e))
+        sys.exit()
 
-            if result['Success'] == 'False':
-                msg = '|----> ' + result['Message']['Text']
-                msg = msg.format(router['part_number'], router['order_number'])
+    for job_details in access_schedule.get_all():
+        fprint('')
+        fprint(Fore.CYAN+'[INFO] Creating job from schedule details for %s' % job_details['part_number'])
+
+        try:
+            job = job_factory(**job_details)
+            fprint(Fore.BLUE+'[FASTEMS] The GID for %s is %s' % (job.part_number, job.gid))
+            fprint(Fore.CYAN+'[INFO] Created Order %s for %s' % (job.order_number, job.description))
+            fprint('[INFO] Submitting Order to Fastems....')
+
+            # response = job.submit()
+
+            fail = {
+                'Success':'False',
+                'Message': {
+                    'Text':'Order number {1} was not created for {0}'
+                }
+            }
+
+            success = {
+                'Success': 'True'
+            }
+
+            response = random.choice([success, fail])
+
+            if response['Success'] == 'True':
+                msg = Fore.GREEN+'[SUCCESS] Order created successfully!'
             else:
-                msg = '|----> Success!'
+                msg = Fore.RED+'[ERROR] '+response['Message']['Text']
+                msg = msg.format(job_details['part_number'], job_details['order_number'])
 
-            print(msg, flush=True)
-            sleep(.5)
-except PermissionError as e:
-    print('There was an error when reading the CSV file.', flush=True)
-    print('[ERROR] %s' % str(e), flush=True)
+            fprint(msg)
+            # time.sleep(.5)
+        except KeyError as e:
+            fprint(Fore.RED+'[ERROR] Fastems did not return a GID for %s; Skipping...' % job_details['part_number'])

@@ -1,6 +1,10 @@
 import logging
 from os import path
 
+FASTEMS_HOST = 'fpc27536s1'
+
+SCHEDULE_CSV_PATH = 'C:/Users/kevinh/ownCloud/Schedules/A17.csv'
+
 DEBUG = True
 TESTING = False
 TEMPLATES_AUTO_RELOAD = True
