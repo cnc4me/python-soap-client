@@ -1,6 +1,9 @@
 from datetime import date
 from random import randint
 
+import zeep
+from zeep import xsd
+from zeep.exceptions import Fault
 from zeep.plugins import HistoryPlugin
 
 from fastems import Services
@@ -30,17 +33,28 @@ def create_order():
     except Exception as e:
         print(str(e))
 
+
 if __name__ == '__main__':
     history = HistoryPlugin()
-    client = Services.Order
+    client = Services.Query
     client.plugins.append(history)
 
-    orders = client.service.GetOrders({
-        'ids': [
-            "0d20da0c-501a-43dc-a250-a74b008ca926"
-        ]
-    })
+    any = xsd.AnyObject(xsd.AnyType(), None)
 
-    print(history.last_sent['envelope'])
-    print(history.last_received['envelope'])
-    print(orders)
+    try:
+        orders = client.service.RunQuery({
+            'ticket':{
+                'Parameters':[any],
+                'QueryName':'FetchOrderSummaries',
+                'TopicName':'05f0b376-d8cd-445a-816a-5364ef34ec98'
+            }
+        })
+
+        print(history.last_sent['envelope'])
+        print(history.last_received['envelope'])
+        print(orders)
+
+    except Fault as e:
+        print(e.detail)
+
+

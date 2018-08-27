@@ -1,7 +1,6 @@
 import io
 import operator
 
-from flask import Blueprint, render_template
 from requests import Session
 from requests.auth import HTTPBasicAuth
 from zeep import Client
@@ -10,8 +9,6 @@ from zeep.transports import Transport
 
 import config
 from fastems.plugins import FastemsHeadersPlugin
-
-bp = Blueprint('services', __name__, url_prefix='/services')
 
 
 def _get_client(service):
@@ -81,15 +78,3 @@ class Services(object):
             print(' ' * 4, value, file=string)
 
         return string.getvalue()
-
-
-@bp.route('')
-def service_list():
-    services = [s for s in vars(Services) if not s.startswith('__') and s is not 'dump']
-    services.sort()
-    return render_template('services.html', services=services)
-
-
-@bp.route('/<service>')
-def service(service):
-    return render_template('wsdl.html', service=service, wsdl=Services.dump(service))

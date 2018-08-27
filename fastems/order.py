@@ -1,8 +1,7 @@
 from zeep.plugins import HistoryPlugin
-from zeep.wsa import WsAddressingPlugin
 
 from fastems.job import Job
-from services import Services
+from fastems.services import Services
 
 
 class Order(object):

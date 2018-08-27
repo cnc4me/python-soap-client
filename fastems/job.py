@@ -16,11 +16,11 @@ class Job(object):
 
 
 def job_factory(part_number: str, order_number, description: str, qty: int,
-                 due_date: datetime, start_date: datetime = None):
-
+                due_date: datetime, start_date: datetime = None):
     new_job = Job(part_number, order_number, description, qty, due_date, start_date)
     new_job.gid = fastems.get_gid_for_part_number(new_job.part_number)
     return new_job
+
 
 if __name__ == '__main__':
     from datetime import date

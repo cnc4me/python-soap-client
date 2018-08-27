@@ -29,7 +29,7 @@ class Schedule(object):
                 pass
 
             if dt is not None:
-                return dt.isoformat()
+                return dt
 
         return None
 
