@@ -23,7 +23,7 @@ def generate_methods(service):
 
             for operation in operations:
                 m = re.match(r'([a-zA-Z]+)\((.+)\)', str(operation))
-
+# TODO: fix the generation of methods with no parameters
                 if m:
                     param_def = m.group(2).split(', ')
                     methods.append({
