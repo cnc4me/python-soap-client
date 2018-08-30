@@ -4,7 +4,6 @@ from flask import Flask, jsonify, render_template
 
 import fastems
 import schedule
-from fastems.services import Services
 
 app = Flask(__name__)
 
@@ -44,7 +43,7 @@ def get_orders_payload():
 
 @app.route('/services')
 def service_list():
-    services = [s for s in vars(Services) if not s.startswith('__') and s is not 'dump']
+    services = fastems.services.__all__
     services.sort()
     return render_template('services.html', services=services)
 
@@ -52,3 +51,8 @@ def service_list():
 @app.route('/services/<service>')
 def service(service):
     return render_template('wsdl.html', service=service, wsdl=Services.dump(service))
+
+
+@app.route('/operations/<service>')
+def operations(service):
+    return render_template('wsdl.html', service=service, wsdl=Services.operations(service))

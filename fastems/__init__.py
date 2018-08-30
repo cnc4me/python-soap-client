@@ -1,16 +1,16 @@
 import shelve
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from os import path
 
-from .services import Services
+from .services import BaseDataService
 
-__all__ = ['services', 'job', 'order', 'date']
+__all__ = ['job', 'order', 'services']
 
 gid_cache = path.join(path.dirname(path.abspath(__file__)), '../cache/gids')
 
 
 def _get_base_data() -> list:
-    response = Services.BaseData.service.GetItemBaseData()
+    response = BaseDataService().GetItemBaseData()
     return response['Data']['ItemBaseDataDto']
 
 

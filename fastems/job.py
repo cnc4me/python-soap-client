@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import fastems
 
@@ -6,13 +6,15 @@ import fastems
 class Job(object):
     def __init__(self, part_number: str, order_number, description: str, qty: int,
                  due_date: datetime, start_date: datetime = None):
+        adjusted_now = (datetime.now() - timedelta(hours=6))
+
         self.qty = qty
         self.gid = None
         self.due_date = due_date
         self.description = description
         self.order_number = order_number
         self.part_number = part_number.upper()
-        self.start_date = datetime.now() if start_date is None else start_date
+        self.start_date = adjusted_now if start_date is None else start_date
 
 
 def job_factory(part_number: str, order_number, description: str, qty: int,
