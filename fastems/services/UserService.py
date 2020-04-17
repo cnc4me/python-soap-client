@@ -24,6 +24,18 @@ class UserService(services.FastemsService):
         '''['requestor: ns4:RequestorDto', 'user: ns2:UserDto']'''
         return self._client.service.CreateUser(requestor, user)
 
+    def GetFeatures(self):
+        ''''''
+        return self._client.service.GetFeatures()
+
+    def GetRoles(self):
+        ''''''
+        return self._client.service.GetRoles()
+
+    def GetUsers(self):
+        ''''''
+        return self._client.service.GetUsers()
+
     def RemoveRole(self, requestor, role):
         '''['requestor: ns4:RequestorDto', 'role: ns2:RoleDto']'''
         return self._client.service.RemoveRole(requestor, role)

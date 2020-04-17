@@ -20,6 +20,10 @@ class BaseDataService(services.FastemsService):
         '''['fixtureIds: ns2:ArrayOfguid']'''
         return self._client.service.GetFixtureBaseData(fixtureIds)
 
+    def GetFixturePositionParameters(self):
+        ''''''
+        return self._client.service.GetFixturePositionParameters()
+
     def GetItemBaseData(self, itemIds):
         '''['itemIds: ns2:ArrayOfguid']'''
         return self._client.service.GetItemBaseData(itemIds)

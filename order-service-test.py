@@ -1,15 +1,21 @@
 from datetime import date
 from random import randint
 
-from zeep.plugins import HistoryPlugin
-
-from fastems import Services
+import fastems
 from fastems.job import job_factory
 from fastems.order import PlannedOrder
+from fastems.services.OrderService import OrderService
+
+
+def get_orders():
+    gids = [
+        i['Id'] for i in fastems.get_base_data()
+    ]
+
+    return OrderService().GetOrders([''])
 
 
 def create_order():
-
     job_data = {
         'part_number': 'HB96-15',
         'description': 'Fastems Bridge Order Creation Test',
@@ -23,24 +29,13 @@ def create_order():
 
     # print(work_order.__dict__)
 
+    return work_order.submit()
+
+
+if __name__ == '__main__':
     try:
-        response = work_order.submit()
+        response = get_orders()
 
         print(response)
     except Exception as e:
         print(str(e))
-
-if __name__ == '__main__':
-    history = HistoryPlugin()
-    client = Services.Order
-    client.plugins.append(history)
-
-    orders = client.service.GetOrders({
-        'ids': [
-            "0d20da0c-501a-43dc-a250-a74b008ca926"
-        ]
-    })
-
-    print(history.last_sent['envelope'])
-    print(history.last_received['envelope'])
-    print(orders)

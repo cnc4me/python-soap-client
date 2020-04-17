@@ -44,6 +44,10 @@ class ToolService(services.FastemsService):
         '''['baseDataIdentity: ns10:ToolBaseDataIdentityDto', 'includeOccupied: xsd:boolean']'''
         return self._client.service.GetAllowedToolLocationNames(baseDataIdentity, includeOccupied)
 
+    def GetMagazinePlanningSets(self):
+        ''''''
+        return self._client.service.GetMagazinePlanningSets()
+
     def GetReservedSisterNumbers(self, baseDataIdentity):
         '''['baseDataIdentity: ns10:ToolBaseDataIdentityDto']'''
         return self._client.service.GetReservedSisterNumbers(baseDataIdentity)
@@ -51,6 +55,14 @@ class ToolService(services.FastemsService):
     def GetToolReservations(self, toolIds):
         '''['toolIds: ns11:ArrayOfguid']'''
         return self._client.service.GetToolReservations(toolIds)
+
+    def GetToolSystemSpecification(self):
+        ''''''
+        return self._client.service.GetToolSystemSpecification()
+
+    def GetToolTemplates(self):
+        ''''''
+        return self._client.service.GetToolTemplates()
 
     def SaveMagazinePlanningSet(self, requestor, request):
         '''['requestor: ns2:RequestorDto', 'request: ns14:MagazinePlanningSetSaveRequestDto']'''

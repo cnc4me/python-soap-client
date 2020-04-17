@@ -6,7 +6,7 @@ FASTEMS_HOSTNAME = 'fpc27536s1'
 DATA_MANAGER_USER='mmsuser'
 DATA_MANAGER_PASS='user'
 
-SCHEDULE_CSV_PATH = 'C:/Users/kevinh/ownCloud/Schedules/A17.csv'
+SCHEDULE_CSV_PATH = 'C:/Users/kevinh/Google Drive/projects/schedules/A17.csv'
 
 DEBUG = True
 TESTING = False

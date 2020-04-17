@@ -12,6 +12,14 @@ class WorkplaceService(services.FastemsService):
         '''['requestor: ns2:RequestorDto', 'request: ns4:EndManualOperationDto']'''
         return self._client.service.EndManualOperation(requestor, request)
 
+    def GetWorkplaces(self):
+        ''''''
+        return self._client.service.GetWorkplaces()
+
+    def IsManualOperationsEnabled(self):
+        ''''''
+        return self._client.service.IsManualOperationsEnabled()
+
     def SaveActiveSetting(self, requestor, workplaceName, workUnitName, activeSetting):
         '''['requestor: ns2:RequestorDto', 'workplaceName: xsd:string', 'workUnitName: xsd:string', 'activeSetting: xsd:string']'''
         return self._client.service.SaveActiveSetting(requestor, workplaceName, workUnitName, activeSetting)

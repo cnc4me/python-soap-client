@@ -20,6 +20,14 @@ class ProductionSchedulerService(services.FastemsService):
         '''['deviceId: ns2:EntityIdDto']'''
         return self._client.service.GetDeviceSettings(deviceId)
 
+    def GetProductionDevices(self):
+        ''''''
+        return self._client.service.GetProductionDevices()
+
+    def GetSettings(self):
+        ''''''
+        return self._client.service.GetSettings()
+
     def ReleasePallet(self, requestor, palletId):
         '''['requestor: ns2:RequestorDto', 'palletId: ns5:PalletIdentityDto']'''
         return self._client.service.ReleasePallet(requestor, palletId)

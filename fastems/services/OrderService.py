@@ -28,6 +28,10 @@ class OrderService(services.FastemsService):
         '''['operationId: ns4:guid']'''
         return self._client.service.GetOrdersForOperation(operationId)
 
+    def GetSettings(self):
+        ''''''
+        return self._client.service.GetSettings()
+
     def SaveSettings(self, requestor, settings):
         '''['requestor: ns2:RequestorDto', 'settings: ns3:OrderSettingsDto']'''
         return self._client.service.SaveSettings(requestor, settings)

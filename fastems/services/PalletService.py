@@ -36,6 +36,14 @@ class PalletService(services.FastemsService):
         '''['palletType: xsd:string']'''
         return self._client.service.GetPalletLocationsAcceptingPalletType(palletType)
 
+    def GetPalletParameters(self):
+        ''''''
+        return self._client.service.GetPalletParameters()
+
+    def GetPalletTypes(self):
+        ''''''
+        return self._client.service.GetPalletTypes()
+
     def ModifyPart(self, requestor, request):
         '''['requestor: ns2:RequestorDto', 'request: ns3:ModifyPartRequestDto']'''
         return self._client.service.ModifyPart(requestor, request)

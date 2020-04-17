@@ -8,6 +8,10 @@ class FactoryCalendarService(services.FastemsService):
         '''['requestor: ns2:RequestorDto', 'day: ns3:FactoryExceptionDayDto']'''
         return self._client.service.DeleteFactoryExceptionDay(requestor, day)
 
+    def GetFactoryCalendar(self):
+        ''''''
+        return self._client.service.GetFactoryCalendar()
+
     def UpdateFactoryDays(self, requestor, days):
         '''['requestor: ns2:RequestorDto', 'days: ns3:ArrayOfFactoryDayDto']'''
         return self._client.service.UpdateFactoryDays(requestor, days)

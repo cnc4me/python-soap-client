@@ -16,6 +16,10 @@ class LocalizationService(services.FastemsService):
         '''['locale: xsd:string']'''
         return self._client.service.GetKeyboardLayout(locale)
 
+    def GetLocales(self):
+        ''''''
+        return self._client.service.GetLocales()
+
     def GetLocalizations(self, locale):
         '''['locale: xsd:string']'''
         return self._client.service.GetLocalizations(locale)

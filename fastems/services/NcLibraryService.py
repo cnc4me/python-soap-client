@@ -20,6 +20,10 @@ class NcLibraryService(services.FastemsService):
         '''['requestor: ns3:RequestorDto', 'paths: ns7:ArrayOfstring']'''
         return self._client.service.DeleteImportFiles(requestor, paths)
 
+    def GetImportSettings(self):
+        ''''''
+        return self._client.service.GetImportSettings()
+
     def GetNcProgram(self, id):
         '''['id: ns2:guid']'''
         return self._client.service.GetNcProgram(id)

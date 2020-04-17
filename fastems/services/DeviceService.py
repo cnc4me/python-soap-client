@@ -32,6 +32,10 @@ class DeviceService(services.FastemsService):
         '''['device: ns2:EntityIdDto', 'palletId: ns8:PalletIdentityDto']'''
         return self._client.service.GetAccessiblePalletTransportDeviceTargetLocations(device, palletId)
 
+    def GetDevices(self):
+        ''''''
+        return self._client.service.GetDevices()
+
     def GetPalletTransportDeviceXYTaskTargetLocations(self, device, loadType):
         '''['device: ns2:EntityIdDto', 'loadType: xsd:string']'''
         return self._client.service.GetPalletTransportDeviceXYTaskTargetLocations(device, loadType)

@@ -4,6 +4,10 @@ class RemoteAlarmService(services.FastemsService):
     def __init__(self):
         super().__init__('RemoteAlarmService')
 
+    def GetUserSettings(self):
+        ''''''
+        return self._client.service.GetUserSettings()
+
     def SaveUserSettings(self, requestor, settings):
         '''['requestor: ns2:RequestorDto', 'settings: ns3:UserSettingsDto']'''
         return self._client.service.SaveUserSettings(requestor, settings)
